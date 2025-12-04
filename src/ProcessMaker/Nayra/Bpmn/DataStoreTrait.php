@@ -117,6 +117,9 @@ trait DataStoreTrait
     {
         $sourceData = $source->getData();
         if (is_array($sourceData)) {
+            if (!is_array($this->data)) {
+                $this->data = [];
+            }
             $this->data = array_merge($this->data, $sourceData);
             $this->lastSyncTime = time();
         }

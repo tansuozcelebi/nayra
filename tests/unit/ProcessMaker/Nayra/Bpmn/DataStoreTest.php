@@ -84,4 +84,24 @@ class DataStoreTest extends EngineTestCase
         $this->assertEquals('sourceValue', $targetStore->getData('key1'));
         $this->assertEquals('value2', $targetStore->getData('key2'));
     }
+
+    /**
+     * Tests that syncFrom handles empty target store correctly
+     */
+    public function testDataStoreSyncFromEmptyTarget()
+    {
+        // Create two data stores
+        $sourceStore = $this->repository->createDataStore();
+        $targetStore = $this->repository->createDataStore();
+
+        // Set data only in source store (target is empty/null)
+        $sourceStore->setData(['key1' => 'value1']);
+
+        // Sync from source to target
+        $targetStore->syncFrom($sourceStore);
+
+        // Assertion: The target store should have source data
+        $this->assertEquals('value1', $targetStore->getData('key1'));
+        $this->assertNotNull($targetStore->getLastSyncTime());
+    }
 }
