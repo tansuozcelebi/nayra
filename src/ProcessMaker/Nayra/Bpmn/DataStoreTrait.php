@@ -25,6 +25,11 @@ trait DataStoreTrait
     private $itemSubject;
 
     /**
+     * @var int|null
+     */
+    private $lastSyncTime;
+
+    /**
      * Get owner process.
      *
      * @return ProcessInterface
@@ -99,5 +104,36 @@ trait DataStoreTrait
     public function getItemSubject()
     {
         return $this->itemSubject;
+    }
+
+    /**
+     * Sync data from another data store.
+     *
+     * @param \ProcessMaker\Nayra\Contracts\Bpmn\DataStoreInterface $source
+     *
+     * @return $this
+     */
+    public function syncFrom($source)
+    {
+        $sourceData = $source->getData();
+        if (is_array($sourceData)) {
+            if (!is_array($this->data)) {
+                $this->data = [];
+            }
+            $this->data = array_merge($this->data, $sourceData);
+            $this->lastSyncTime = time();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get last sync timestamp.
+     *
+     * @return int|null
+     */
+    public function getLastSyncTime()
+    {
+        return $this->lastSyncTime;
     }
 }

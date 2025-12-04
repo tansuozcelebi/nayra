@@ -76,4 +76,20 @@ interface DataStoreInterface extends ItemAwareElementInterface
      * @return $this
      */
     public function putData($name, $data);
+
+    /**
+     * Sync data from another data store.
+     *
+     * @param DataStoreInterface $source
+     *
+     * @return $this
+     */
+    public function syncFrom(DataStoreInterface $source);
+
+    /**
+     * Get last sync timestamp.
+     *
+     * @return int|null
+     */
+    public function getLastSyncTime();
 }

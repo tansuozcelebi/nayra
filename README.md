@@ -61,6 +61,26 @@ One token arrives to the second task and one to the third task
 ```
 ![Second task and third task](/docs/diagrams/ParallelGateway_3.svg "Second task and third task")
 
+## Data Store Synchronization
+
+Synchronize data between data stores
+```
+        // Create two data stores
+        $sourceStore = $this->repository->createDataStore();
+        $targetStore = $this->repository->createDataStore();
+        
+        // Set data in source store
+        $sourceStore->setData(['key1' => 'value1', 'key2' => 'value2']);
+        
+        // Sync from source to target
+        $targetStore->syncFrom($sourceStore);
+        
+        // Get synced data
+        $value = $targetStore->getData('key1'); // returns 'value1'
+        
+        // Check last sync time
+        $lastSync = $targetStore->getLastSyncTime(); // returns unix timestamp
+```
 
 ## License
 
