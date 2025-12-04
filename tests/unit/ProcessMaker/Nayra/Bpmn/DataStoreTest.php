@@ -35,4 +35,53 @@ class DataStoreTest extends EngineTestCase
         //Assertion: the data store should have a non initialized item subject
         $this->assertNull($dataStore->getItemSubject());
     }
+
+    /**
+     * Tests that syncFrom method works correctly
+     */
+    public function testDataStoreSyncFrom()
+    {
+        // Create two data stores
+        $sourceStore = $this->repository->createDataStore();
+        $targetStore = $this->repository->createDataStore();
+
+        // Set some data in the source store
+        $sourceStore->setData(['key1' => 'value1', 'key2' => 'value2']);
+
+        // Set some data in the target store
+        $targetStore->setData(['key3' => 'value3']);
+
+        // Sync from source to target
+        $targetStore->syncFrom($sourceStore);
+
+        // Assertion: The target store should have data from both stores
+        $this->assertEquals('value1', $targetStore->getData('key1'));
+        $this->assertEquals('value2', $targetStore->getData('key2'));
+        $this->assertEquals('value3', $targetStore->getData('key3'));
+
+        // Assertion: The last sync time should be set
+        $this->assertNotNull($targetStore->getLastSyncTime());
+        $this->assertIsInt($targetStore->getLastSyncTime());
+    }
+
+    /**
+     * Tests that syncFrom merges data correctly (target data takes precedence)
+     */
+    public function testDataStoreSyncFromMergeConflict()
+    {
+        // Create two data stores
+        $sourceStore = $this->repository->createDataStore();
+        $targetStore = $this->repository->createDataStore();
+
+        // Set overlapping data
+        $sourceStore->setData(['key1' => 'sourceValue', 'key2' => 'value2']);
+        $targetStore->setData(['key1' => 'targetValue']);
+
+        // Sync from source to target
+        $targetStore->syncFrom($sourceStore);
+
+        // Assertion: Source data should override target data
+        $this->assertEquals('sourceValue', $targetStore->getData('key1'));
+        $this->assertEquals('value2', $targetStore->getData('key2'));
+    }
 }
