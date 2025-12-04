@@ -65,7 +65,7 @@ class DataStoreTest extends EngineTestCase
     }
 
     /**
-     * Tests that syncFrom merges data correctly (target data takes precedence)
+     * Tests that syncFrom merges data correctly (source data takes precedence)
      */
     public function testDataStoreSyncFromMergeConflict()
     {
